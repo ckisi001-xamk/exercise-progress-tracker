@@ -1,6 +1,6 @@
 fastapi
 uvicorn[standard]
-pydantic
+pydantic[email]
 pydantic-settings
 sqlalchemy
 psycopg[binary]
@@ -10,3 +10,4 @@ itsdangerous
 greenlet
 bcrypt
 pyjwt
+email-validator
