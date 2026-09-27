@@ -9,3 +9,4 @@ sqladmin
 itsdangerous
 greenlet
 bcrypt
+pyjwt
