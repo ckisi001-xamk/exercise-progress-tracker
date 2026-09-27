@@ -1,19 +1,13 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    api_host: str = "0.0.0.0"
-    api_port: int = 8000
-    cors_origins: list[str] = ["http://localhost:5173"]
-    
-    postgres_user: str = "postgres"
-    postgres_password: str = "postgres"
-    postgres_db: str = "exercisetracker"
-    database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/exercisetracker"
+    database_url: str
+    sqladmin_username: str = "admin"
+    sqladmin_password: str = "admin"
+    sqladmin_secret_key: str = "insecure-secret-key-change-in-production"
 
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        extra="ignore"
-    )
+    class Config:
+        env_file = ".env"
+        extra = "allow"
 
 settings = Settings()
