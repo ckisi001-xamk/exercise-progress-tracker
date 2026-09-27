@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from app.api.health import router as health_router
 from app.api.auth import router as auth_router
@@ -7,6 +8,14 @@ from app.admin import setup_admin
 from app.core.config import settings
 
 app = FastAPI(title="Exercise Progress Tracker API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.add_middleware(SessionMiddleware, secret_key=settings.sqladmin_secret_key)
 
