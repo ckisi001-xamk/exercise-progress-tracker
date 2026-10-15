@@ -1,5 +1,6 @@
+from datetime import datetime
 import uuid
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
@@ -22,11 +23,23 @@ def create_session(
 
 @router.get("", response_model=List[WorkoutSessionRead])
 def list_sessions(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    status: Optional[str] = None,
+    plan_id: Optional[uuid.UUID] = None,
+    from_date: Optional[datetime] = None,
+    to_date: Optional[datetime] = None,
+    unscheduled: Optional[bool] = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
     service = SessionService(db)
-    return service.list_sessions(current_user.id)
+    return service.list_sessions(
+        user_id=current_user.id,
+        status=status,
+        plan_id=plan_id,
+        from_date=from_date,
+        to_date=to_date,
+        unscheduled=unscheduled
+    )
 
 @router.get("/{session_id}", response_model=WorkoutSessionRead)
 def get_session(

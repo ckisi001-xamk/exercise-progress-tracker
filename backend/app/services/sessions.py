@@ -87,8 +87,23 @@ class SessionService:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
         return session
 
-    def list_sessions(self, user_id: uuid.UUID) -> List[WorkoutSession]:
-        return self.repo.list_for_user(user_id)
+    def list_sessions(
+        self,
+        user_id: uuid.UUID,
+        status: Optional[str] = None,
+        plan_id: Optional[uuid.UUID] = None,
+        from_date: Optional[datetime] = None,
+        to_date: Optional[datetime] = None,
+        unscheduled: Optional[bool] = None
+    ) -> List[WorkoutSession]:
+        return self.repo.list_for_user(
+            user_id=user_id,
+            status=status,
+            plan_id=plan_id,
+            from_date=from_date,
+            to_date=to_date,
+            unscheduled=unscheduled
+        )
 
     def update_session(self, session_id: uuid.UUID, data: WorkoutSessionUpdate, user_id: uuid.UUID) -> WorkoutSession:
         session = self.get_session(session_id, user_id)
