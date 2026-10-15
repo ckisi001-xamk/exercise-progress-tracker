@@ -137,14 +137,14 @@ Skip stretch tickets you did not do.
 
 ### S3-12 — Calendar API (Must)
 
-- **Status:** Pending
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** a0a4a64
 - **Demonstration:**
   1. **Do this:** `GET /calendar?from=&to=` (optional `plan_id`) for dated sessions.
   2. **Capture:** Calendar response.
-  3. **Must show:** Only current user’s sessions with `session_at` in range.
+  3. **Must show:** Only current user's sessions with `session_at` in range.
   4. **Save as:** `docs/reports/images/sprint-03/s3-12-calendar-api.png`
-  5. **Caption:**
+  5. **Caption:** Kalenterirajapinta (GET /calendar) todennettu. Rajapinta palauttaa ainoastaan todennetun käyttäjän harjoitussessiot määritetyltä aikaväliltä (2026-10-01 - 2026-10-31) eager loading -liitoksella ilman N+1-ongelmia.
 - **Used AI?** Yes
 
 ### S3-13 — TanStack Query setup (Must)
