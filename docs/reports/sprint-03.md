@@ -156,14 +156,14 @@ Skip stretch tickets you did not do.
 
 ### S3-14 — Sessions list and filters UI (Must)
 
-- **Status:** Pending
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** 6fa2490
 - **Demonstration:**
-  1. **Do this:** Open Sessions in the UI with filters visible.
-  2. **Capture:** Screenshot of the list.
-  3. **Must show:** Logged-in user’s sessions only.
-  4. **Save as:** `docs/reports/images/sprint-03/s3-14-sessions-ui.png`
-  5. **Caption:**
+  1. **Do this:** View sessions list; apply status / date-range filter.
+  2. **Capture:** Filtered sessions view.
+  3. **Must show:** Filter controls working and sessions filtered by status/date.
+  4. **Save as:** `docs/reports/images/sprint-03/s3-14-sessions-list.png`
+  5. **Caption:** Sessioiden listaus- ja suodatusnäkymä toteutettu TanStack Queryllä. Käyttöliittymä reagoi suodattimiin lennosta ilman sivun uudelleenlatausta ja näyttää harjoitukset tilakohtaisilla tunnisteilla.
 - **Used AI?** Yes
 
 ### S3-15 — Session designer planned and actual (Must)
