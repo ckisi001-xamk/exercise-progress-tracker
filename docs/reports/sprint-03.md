@@ -17,111 +17,111 @@ Tavoitteena on toteuttaa moniharjoitteiset treenisessiot (WorkoutSessions) erill
 
 ### S3-01 — Session models and migration (Must)
 - **Status:** Done
-- **PR / commit:** 5796fd0
+- **PR / commit:** dc6f4f7 5796fd0
 - **Used AI?** Yes
 
 ### S3-02 — Goal model and migration (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-03 — Plan model and migration (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-04 — Sessions CRUD API (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-05 — Session measurements planned and actual (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-06 — Session filters (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-07 — Clone session API (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-08 — Plans CRUD and attach API (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-09 — Activity types API (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-10 — Goals CRUD API (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-11 — Ownership enforcement (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-12 — Calendar API (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-13 — TanStack Query setup (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-14 — Sessions list and filters UI (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-15 — Session designer planned and actual (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-16 — Edit, delete, and clone session UI (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-17 — Activity type selector (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-18 — Plans UI (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-19 — Calendar UI (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-20 — Dashboard recent sessions (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-21 — Empty and error states (Should)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
 ### S3-22 — IDOR demo documentation (Must)
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:** 5796fd0
 - **Used AI?** Yes
 
