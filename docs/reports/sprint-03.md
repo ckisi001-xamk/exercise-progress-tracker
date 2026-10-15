@@ -113,14 +113,14 @@ Skip stretch tickets you did not do.
 
 ### S3-10 — Goals CRUD API (Must)
 
-- **Status:** Pending
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** de43af0
 - **Demonstration:**
-  1. **Do this:** Create/list a period goal with `unit_type_id` in `/docs`.
-  2. **Capture:** Goal payload.
-  3. **Must show:** Period goal keyed by catalog unit—not planned set values.
+  1. **Do this:** Create and list goals in Swagger / cURL.
+  2. **Capture:** Goals list or detail response.
+  3. **Must show:** Goal tied to unit (and optional activity), target, active flag—not planned per-set values.
   4. **Save as:** `docs/reports/images/sprint-03/s3-10-goals.png`
-  5. **Caption:**
+  5. **Caption:** Tavoitteiden (Goal) elinkaari ja listaus todennettu rajapinnasta. Tavoite on sidottu mittayksikköön (unit_type_id), jaksoon (period: "week"), aktiivisuustilaan (active: true) ja tavoitearvoon (target_value: "100.000"). Tavoite on erillinen harjoituskertojen sarjakohtaisista suunnitelma-arvoista. Käyttäjäeristys (IDOR) varmistettu user_id-kytkennällä, ja Bearer-token pidetty suojattuna muuttujassa.
 - **Used AI?** Yes
 
 ### S3-11 — Ownership enforcement (Must)
