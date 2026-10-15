@@ -149,10 +149,10 @@ Skip stretch tickets you did not do.
 
 ### S3-13 — TanStack Query setup (Must)
 
-- **Status:** Done / deferred (why):
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** 962d438
 - **Used AI?** Yes
-- **Note your query-key convention**:
+- **Note your query-key convention**: Käytössä keskitetty ja vahvasti tyypitetty queryKey-tehdas (frontend/src/lib/queryKeys.ts). Rakenne noudattaa hierarkkista muotoa: resurssi -> toiminto -> parametrit/filtterit (esim. ["sessions", "list", filters] tai ["calendar", { from, to, planId }]). Tämä takaa deterministisen välimuistin validoinnin ja estää manuaaliset merkkijonovirheet.
 
 ### S3-14 — Sessions list and filters UI (Must)
 
