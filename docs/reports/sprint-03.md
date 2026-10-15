@@ -125,14 +125,14 @@ Skip stretch tickets you did not do.
 
 ### S3-11 — Ownership enforcement (Must)
 
-- **Status:** Pending
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** d2e5492
 - **Demonstration:**
-  1. **Do this:** As User B, call get/update/delete on User A’s session and plan IDs.
+  1. **Do this:** As User B, call get/update/delete on User A's session and plan IDs.
   2. **Capture:** Failed responses (404 or 403).
   3. **Must show:** Cross-user access denied; note your status convention.
   4. **Save as:** `docs/reports/images/sprint-03/s3-11-ownership.png`
-  5. **Caption:**
+  5. **Caption:** IDOR-suojaus todennettu rajapinnasta. Autentikoitu Käyttäjä B yrittää hakea Käyttäjän A omistamaa harjoitussessiota (GET /sessions/{session_id}). Palvelin palauttaa konvention mukaisesti 404 Not Found (Session not found), jotta toisen käyttäjän resurssin olemassaoloa ei paljasteta hyökkääjälle. Pääsy evätään luotettavasti tietokantatason käyttäjärajauksella ilman tietovuotoja.
 - **Used AI?** Yes
 
 ### S3-12 — Calendar API (Must)
