@@ -17,7 +17,7 @@ Tavoitteena on toteuttaa moniharjoitteiset treenisessiot (WorkoutSessions) erill
 
 ### S3-01 — Session models and migration (Must)
 - **Status:** Done
-- **PR / commit:** dc6f4f7 5796fd0
+- **PR / commit:** 8cea092 dc6f4f7 5796fd0
 - **Used AI?** Yes
 
 ### S3-02 — Goal model and migration (Must)
