@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import uuid
 from typing import List, Optional
 from fastapi import HTTPException, status
@@ -112,3 +113,38 @@ class SessionService:
     def delete_session(self, session_id: uuid.UUID, user_id: uuid.UUID) -> None:
         session = self.get_session(session_id, user_id)
         self.repo.delete(session)
+
+    def duplicate_session(self, session_id: uuid.UUID, user_id: uuid.UUID) -> WorkoutSession:
+        original = self.repo.get_by_id_for_user(session_id, user_id)
+        if not original:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
+
+        # SACM-audit trail: source_session_id kytketään alkuperäiseen ja tila nollataan
+        new_session = WorkoutSession(
+            user_id=user_id,
+            name=f"{original.name} (Kopio)",
+            status="planned",
+            notes=original.notes,
+            intensity=None,
+            plan_id=original.plan_id,
+            source_session_id=original.id,
+            session_at=datetime.now(timezone.utc)
+        )
+
+        for orig_item in original.items:
+            new_item = WorkoutSessionItem(
+                activity_type_id=orig_item.activity_type_id,
+                sort_order=orig_item.sort_order,
+                notes=orig_item.notes
+            )
+            for orig_m in orig_item.measurements:
+                new_m = WorkoutSessionMeasurement(
+                    unit_type_id=orig_m.unit_type_id,
+                    planned_value=orig_m.actual_value if orig_m.actual_value is not None else orig_m.planned_value,
+                    actual_value=None,
+                    set_index=orig_m.set_index
+                )
+                new_item.measurements.append(new_m)
+            new_session.items.append(new_item)
+
+        return self.repo.create(new_session)

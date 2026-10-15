@@ -55,3 +55,12 @@ def delete_session(
 ):
     service = SessionService(db)
     service.delete_session(session_id, current_user.id)
+
+@router.post("/{session_id}/duplicate", response_model=WorkoutSessionRead, status_code=status.HTTP_201_CREATED)
+def duplicate_session(
+    session_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    service = SessionService(db)
+    return service.duplicate_session(session_id=session_id, user_id=current_user.id)
