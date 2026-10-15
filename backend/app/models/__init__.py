@@ -8,3 +8,5 @@ __all__ = ["User", "ActivityType", "UnitType", "ActivityTypeUnitType"]
 from app.models.workout_session import WorkoutSession
 from app.models.workout_session_item import WorkoutSessionItem
 from app.models.workout_session_measurement import WorkoutSessionMeasurement
+
+from app.models.goal import Goal
