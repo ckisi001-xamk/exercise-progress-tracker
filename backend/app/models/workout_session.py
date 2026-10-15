@@ -12,6 +12,7 @@ class WorkoutSession(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    plan_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("workout_plans.id", ondelete="SET NULL"), nullable=True, index=True)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     session_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     status: Mapped[str] = mapped_column(String(20), default="planned", nullable=False)
@@ -21,6 +22,7 @@ class WorkoutSession(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
+    plan: Mapped[Optional["WorkoutPlan"]] = relationship("WorkoutPlan", back_populates="sessions")
     items: Mapped[List["WorkoutSessionItem"]] = relationship(
         "WorkoutSessionItem",
         back_populates="session",
@@ -32,4 +34,5 @@ class WorkoutSession(Base):
         CheckConstraint("status IN ('planned', 'in_progress', 'completed')", name="ck_workout_sessions_status"),
         CheckConstraint("intensity IS NULL OR (intensity >= 1 AND intensity <= 10)", name="ck_workout_sessions_intensity"),
         Index("ix_workout_sessions_user_session_at", "user_id", "session_at"),
+        Index("ix_workout_sessions_plan_session_at", "plan_id", "session_at"),
     )

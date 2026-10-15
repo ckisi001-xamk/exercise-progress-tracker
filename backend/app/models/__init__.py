@@ -10,3 +10,5 @@ from app.models.workout_session_item import WorkoutSessionItem
 from app.models.workout_session_measurement import WorkoutSessionMeasurement
 
 from app.models.goal import Goal
+
+from app.models.workout_plan import WorkoutPlan
