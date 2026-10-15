@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from app.api.health import router as health_router
 from app.api.auth import router as auth_router
+from app.api.sessions import router as sessions_router
 from app.db.session import engine
 from app.admin import setup_admin
 from app.core.config import settings
@@ -21,5 +22,6 @@ app.add_middleware(SessionMiddleware, secret_key=settings.sqladmin_secret_key)
 
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(sessions_router)
 
 setup_admin(app, engine)
