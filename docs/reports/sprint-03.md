@@ -97,14 +97,12 @@ Skip stretch tickets you did not do.
 
 ### S3-08 — Plans CRUD and attach API (Must)
 
-- **Status:** Pending
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** 3dc880f
 - **Demonstration:**
-  1. **Do this:** Create a plan; attach a session via `plan_id` (or attach route); list plan members ordered by `session_at`.
-  2. **Capture:** Plan detail with members.
-  3. **Must show:** Membership via `plan_id`, order by `session_at`—**no** junction table.
-  4. **Save as:** `docs/reports/images/sprint-03/s3-08-plans.png`
-  5. **Caption:**
+  1. Luotu WorkoutPlan, liitetty sessio suoralla plan_id-viitteellä ja haettu ohjelman detaljit jäsensessioineen.
+  2. Kuva tallennettu: docs/reports/images/sprint-03/s3-08-plans.png
+  3. Todentaa suoran plan_id-kytkennän ilman välitaulua, omistajuuden eristyksen ja jäsensessioiden palautuksen.
 - **Used AI?** Yes
 
 ### S3-09 — Activity types API (Must)
