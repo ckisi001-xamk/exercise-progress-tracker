@@ -32,12 +32,12 @@ Tavoitteena on toteuttaa moniharjoitteiset treenisessiot (WorkoutSessions) erill
 
 ### S3-04 — Sessions CRUD API (Must)
 - **Status:** Done
-- **PR / commit:** 8065f6f 5796fd0
+- **PR / commit:** d8d9a34
 - **Used AI?** Yes
 
 ### S3-05 — Session measurements planned and actual (Must)
 - **Status:** Done
-- **PR / commit:** 8065f6f 5796fd0
+- **PR / commit:** d8d9a34
 - **Used AI?** Yes
 
 ### S3-06 — Session filters (Must)
