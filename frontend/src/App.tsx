@@ -3,10 +3,12 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { RegisterPage } from './pages/RegisterPage';
 import { LoginPage } from './pages/LoginPage';
 import { SessionsPage } from './pages/SessionsPage';
+import { SessionFormPage } from './pages/SessionFormPage';
 
 const MainContent: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [view, setView] = useState<'login' | 'register'>('login');
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
@@ -64,7 +66,32 @@ const MainContent: React.FC = () => {
       <main>
         {isAuthenticated ? (
           <div>
-            <SessionsPage />
+            {isCreatingSession ? (
+              <SessionFormPage
+                onSaved={() => setIsCreatingSession(false)}
+                onCancel={() => setIsCreatingSession(false)}
+              />
+            ) : (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+                  <button
+                    onClick={() => setIsCreatingSession(true)}
+                    style={{
+                      padding: '8px 16px',
+                      background: '#1976d2',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 4,
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                    }}
+                  >
+                    + Luo uusi sessio
+                  </button>
+                </div>
+                <SessionsPage />
+              </div>
+            )}
           </div>
         ) : view === 'login' ? (
           <LoginPage />
