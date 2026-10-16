@@ -168,14 +168,14 @@ Skip stretch tickets you did not do.
 
 ### S3-15 — Session designer planned and actual (Must)
 
-- **Status:** Pending
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** 801cadb
 - **Demonstration:**
   1. **Do this:** Create/edit a multi-exercise session with planned and/or actual inputs from unit links.
   2. **Capture:** Designer UI.
   3. **Must show:** Catalog-driven fields (e.g. per-set strength + running).
   4. **Save as:** `docs/reports/images/sprint-03/s3-15-designer.png`
-  5. **Caption:**
+  5. **Caption:** Session Designer -lomake kytketty tietokannan lajikatalogiin. Lomake generoi voimaliikkeelle sarjakohtaiset toisto- ja painokentät sekä kestävyyslajille kesto- ja matkakentät suunnitelluille ja toteutuneille arvoille ilman kovakoodattuja yksiköitä.
 - **Used AI?** Yes
 
 ### S3-16 — Edit, delete, and clone session UI (Must)
