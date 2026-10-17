@@ -193,7 +193,7 @@ Skip stretch tickets you did not do.
 ### S3-17 — Activity type selector (Must)
 
 - **Status:** Done
-- **PR / commit:**
+- **PR / commit:** 801cadb
 - **Used AI?** Yes
 
 ### S3-18 — Plans UI (Must)
