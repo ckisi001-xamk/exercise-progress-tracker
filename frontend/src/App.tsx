@@ -8,7 +8,8 @@ import { SessionFormPage } from './pages/SessionFormPage';
 const MainContent: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [view, setView] = useState<'login' | 'register'>('login');
-  const [isCreatingSession, setIsCreatingSession] = useState(false);
+  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
@@ -66,16 +67,31 @@ const MainContent: React.FC = () => {
       <main>
         {isAuthenticated ? (
           <div>
-            {isCreatingSession ? (
+            {isCreating || editingSessionId ? (
               <SessionFormPage
-                onSaved={() => setIsCreatingSession(false)}
-                onCancel={() => setIsCreatingSession(false)}
+                sessionId={editingSessionId}
+                onSaved={() => {
+                  setIsCreating(false);
+                  setEditingSessionId(null);
+                }}
+                onCancel={() => {
+                  setIsCreating(false);
+                  setEditingSessionId(null);
+                }}
+                onDeleted={() => {
+                  setIsCreating(false);
+                  setEditingSessionId(null);
+                }}
+                onCloned={() => {
+                setEditingSessionId(null);
+                setIsCreating(false);
+              }}
               />
             ) : (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
                   <button
-                    onClick={() => setIsCreatingSession(true)}
+                    onClick={() => setIsCreating(true)}
                     style={{
                       padding: '8px 16px',
                       background: '#1976d2',
@@ -89,7 +105,7 @@ const MainContent: React.FC = () => {
                     + Luo uusi sessio
                   </button>
                 </div>
-                <SessionsPage />
+                <SessionsPage onSelectSession={(id) => setEditingSessionId(id)} />
               </div>
             )}
           </div>

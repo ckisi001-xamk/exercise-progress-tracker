@@ -180,19 +180,19 @@ Skip stretch tickets you did not do.
 
 ### S3-16 — Edit, delete, and clone session UI (Must)
 
-- **Status:** Pending
+- **Status:** Done
 - **PR / commit:**
 - **Demonstration:**
   1. **Do this:** Clone from the UI onto a date; optionally show delete confirm.
   2. **Capture:** Clone result in UI.
   3. **Must show:** Clone available from the session UI.
   4. **Save as:** `docs/reports/images/sprint-03/s3-16-clone-ui.png`
-  5. **Caption:**
+  5. **Caption:** Sessioiden muokkauslomakkeelle toteutettu tilannevedoksen luonti (kloonaus) valinnaisella ajankohdalla. Rajapintakutsun onnistuessa valimuisti invalidoidaan, lomaketila nollataan ja kayttaja ohjataan paanakymaan, jossa kloonattu sessio esitetaan planned-tilassa ilman toteutuneita arvoja.
 - **Used AI?** Yes
 
 ### S3-17 — Activity type selector (Must)
 
-- **Status:** Done / deferred (why):
+- **Status:** Done
 - **PR / commit:**
 - **Used AI?** Yes
 

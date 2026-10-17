@@ -1,19 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchActivityTypes,
+  fetchSession,
   createSession,
+  updateSession,
+  deleteSession,
+  cloneSession,
   type SessionWrite,
   type SessionItemWrite,
 } from '../api/sessions';
 import { MeasurementEditor } from '../components/MeasurementEditor';
 
 interface Props {
+  sessionId?: string | null;
   onSaved: () => void;
   onCancel: () => void;
+  onDeleted?: () => void;
+  onCloned?: (newSessionId: string) => void;
 }
 
-export const SessionFormPage: React.FC<Props> = ({ onSaved, onCancel }) => {
+export const SessionFormPage: React.FC<Props> = ({
+  sessionId,
+  onSaved,
+  onCancel,
+  onDeleted,
+  onCloned,
+}) => {
   const queryClient = useQueryClient();
   const [name, setName] = useState('');
   const [sessionAt, setSessionAt] = useState('');
@@ -23,32 +36,110 @@ export const SessionFormPage: React.FC<Props> = ({ onSaved, onCancel }) => {
   const [items, setItems] = useState<SessionItemWrite[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Kloonauskortin tilat
+  const [cloneName, setCloneName] = useState('');
+  const [cloneDate, setCloneDate] = useState('');
+
   const { data: activities, isLoading: activitiesLoading } = useQuery({
     queryKey: ['activity-types'],
     queryFn: fetchActivityTypes,
   });
 
-  const mutation = useMutation({
-    mutationFn: (payload: SessionWrite) => createSession(payload),
+  const { data: existingSession, isLoading: sessionLoading } = useQuery({
+    queryKey: ['session', sessionId],
+    queryFn: () => fetchSession(sessionId!),
+    enabled: Boolean(sessionId),
+  });
+
+  useEffect(() => {
+    if (existingSession) {
+      setName(existingSession.name || '');
+      setCloneName(`${existingSession.name} (Kopio)`);
+      if (existingSession.session_at) {
+        const d = new Date(existingSession.session_at);
+        const pad = (n: number) => String(n).padStart(2, '0');
+        setSessionAt(
+          `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+        );
+      } else {
+        setSessionAt('');
+      }
+      setStatus(existingSession.status);
+      setIntensity(existingSession.intensity ?? '');
+      setNotes(existingSession.notes || '');
+
+      if (existingSession.items) {
+        setItems(
+          existingSession.items.map((it) => ({
+            activity_type_id: it.activity_type_id,
+            sort_order: it.sort_order,
+            notes: it.notes || '',
+            measurements: (it.measurements || []).map((m) => ({
+              unit_type_id: m.unit_type_id,
+              set_index: m.set_index,
+              planned_value: m.planned_value !== null ? Number(m.planned_value) : null,
+              actual_value: m.actual_value !== null ? Number(m.actual_value) : null,
+            })),
+          }))
+        );
+      }
+    }
+  }, [existingSession]);
+
+  const saveMutation = useMutation({
+    mutationFn: (payload: SessionWrite) =>
+      sessionId ? updateSession(sessionId, payload) : createSession(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sessions'] });
       queryClient.invalidateQueries({ queryKey: ['calendar'] });
+      if (sessionId) {
+        queryClient.invalidateQueries({ queryKey: ['session', sessionId] });
+      }
       onSaved();
     },
-    onError: (err: Error) => {
-      setErrorMessage(err.message);
+    onError: (err: Error) => setErrorMessage(err.message),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteSession(sessionId!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['calendar'] });
+      if (onDeleted) onDeleted();
+      else onSaved();
     },
+    onError: (err: Error) => setErrorMessage(err.message),
+  });
+
+  const cloneMutation = useMutation({
+    mutationFn: () =>
+      cloneSession(sessionId!, {
+        name: cloneName || undefined,
+        session_at: cloneDate ? new Date(cloneDate).toISOString() : null,
+      }),
+    onSuccess: (newSession) => {
+      queryClient.invalidateQueries({ queryKey: ["sessions"] });
+      queryClient.invalidateQueries({ queryKey: ["calendar"] });
+      if (onCloned) {
+        onCloned(newSession.id);
+      } else if (onCancel) {
+        onCancel();
+      }
+    },
+    onError: (err: Error) => setErrorMessage(err.message),
   });
 
   const addExercise = (activityId: string) => {
     if (!activityId) return;
-    const newItem: SessionItemWrite = {
-      activity_type_id: activityId,
-      sort_order: items.length,
-      notes: '',
-      measurements: [],
-    };
-    setItems([...items, newItem]);
+    setItems([
+      ...items,
+      {
+        activity_type_id: activityId,
+        sort_order: items.length,
+        notes: '',
+        measurements: [],
+      },
+    ]);
   };
 
   const removeItem = (index: number) => {
@@ -65,7 +156,6 @@ export const SessionFormPage: React.FC<Props> = ({ onSaved, onCancel }) => {
     e.preventDefault();
     setErrorMessage(null);
 
-    // Siivotaan tyhjät mittaukset pois (molemmat arvot null) jotta API ei heitä 422
     const cleanedItems = items.map((item, idx) => ({
       ...item,
       sort_order: idx,
@@ -76,25 +166,44 @@ export const SessionFormPage: React.FC<Props> = ({ onSaved, onCancel }) => {
       ),
     }));
 
-    const payload: SessionWrite = {
+    saveMutation.mutate({
       name,
       session_at: sessionAt ? new Date(sessionAt).toISOString() : null,
       status,
       intensity: intensity === '' ? null : Number(intensity),
       notes: notes || null,
       items: cleanedItems,
-    };
-
-    mutation.mutate(payload);
+    });
   };
 
-  if (activitiesLoading) return <p>Ladataan harjoituslajeja...</p>;
+  const handleDelete = () => {
+    if (window.confirm(`Haluatko varmasti poistaa session "${name}"? Tätä ei voi perua.`)) {
+      deleteMutation.mutate();
+    }
+  };
+
+  if (activitiesLoading || (sessionId && sessionLoading)) {
+    return <p>Ladataan tietoja...</p>;
+  }
 
   return (
-    <div style={{ maxWidth: 800, margin: '1rem auto', padding: '1.5rem', background: '#fff', border: '1px solid #ccc', borderRadius: 8 }}>
-      <h3>Luo uusi harjoitussessio (Session Designer)</h3>
+    <div style={{ maxWidth: 850, margin: '1rem auto', padding: '1.5rem', background: '#fff', border: '1px solid #ccc', borderRadius: 8 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3>{sessionId ? 'Muokkaa sessiota' : 'Luo uusi harjoitussessio'}</h3>
+        {sessionId && (
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={deleteMutation.isPending}
+            style={{ padding: '6px 12px', background: '#d32f2f', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+          >
+            {deleteMutation.isPending ? 'Poistetaan...' : 'Poista sessio'}
+          </button>
+        )}
+      </div>
+
       {errorMessage && (
-        <div style={{ padding: '0.75rem', background: '#ffebee', color: '#c62828', borderRadius: 4, marginBottom: '1rem' }}>
+        <div style={{ padding: '0.75rem', background: '#ffebee', color: '#c62828', borderRadius: 4, margin: '1rem 0' }}>
           {errorMessage}
         </div>
       )}
@@ -205,10 +314,10 @@ export const SessionFormPage: React.FC<Props> = ({ onSaved, onCancel }) => {
         <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
           <button
             type="submit"
-            disabled={mutation.isPending}
+            disabled={saveMutation.isPending}
             style={{ padding: '8px 20px', background: '#1976d2', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}
           >
-            {mutation.isPending ? 'Tallennetaan...' : 'Tallenna sessio'}
+            {saveMutation.isPending ? 'Tallennetaan...' : 'Tallenna muutokset'}
           </button>
           <button
             type="button"
@@ -219,6 +328,44 @@ export const SessionFormPage: React.FC<Props> = ({ onSaved, onCancel }) => {
           </button>
         </div>
       </form>
+
+      {/* S3-16: Kloonauspaneeli olemassa olevalle sessiolle */}
+      {sessionId && (
+        <div style={{ marginTop: '2.5rem', padding: '1.25rem', border: '1px solid #90caf9', background: '#e3f2fd', borderRadius: 6 }}>
+          <h4 style={{ margin: '0 0 0.5rem 0', color: '#0d47a1' }}>Kloonaa sessio uudelle päivälle (Clone snapshot)</h4>
+          <p style={{ fontSize: '0.85rem', color: '#333', margin: '0 0 1rem 0' }}>
+            Kloonaus luo itsenäisen tilannevedoksen. Suunnitellut arvot kopioidaan, toteutuneet nollataan ja tila palaa arvoon <em>planned</em>.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '0.75rem', alignItems: 'flex-end' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600 }}>Kopion nimi</label>
+              <input
+                type="text"
+                value={cloneName}
+                onChange={(e) => setCloneName(e.target.value)}
+                style={{ width: '100%', padding: '6px' }}
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600 }}>Uusi ajankohta (vapaaehtoinen)</label>
+              <input
+                type="datetime-local"
+                value={cloneDate}
+                onChange={(e) => setCloneDate(e.target.value)}
+                style={{ width: '100%', padding: '6px' }}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => cloneMutation.mutate()}
+              disabled={cloneMutation.isPending}
+              style={{ padding: '7px 16px', background: '#0288d1', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600 }}
+            >
+              {cloneMutation.isPending ? 'Kloonataan...' : 'Kloonaa'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
