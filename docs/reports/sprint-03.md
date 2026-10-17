@@ -198,14 +198,13 @@ Skip stretch tickets you did not do.
 
 ### S3-18 — Plans UI (Must)
 
-- **Status:** Pending
-- **PR / commit:**
-- **Demonstration:**
+- **Status:** Done
+- **PR / commit:** 1a63c17
   1. **Do this:** Open Plans; show members ordered by `session_at` / Unscheduled.
   2. **Capture:** Plan detail.
   3. **Must show:** Attach via `plan_id` story; no junction reorder UI.
   4. **Save as:** `docs/reports/images/sprint-03/s3-18-plans-ui.png`
-  5. **Caption:**
+  5. **Caption:** Harjoitussuunnitelmien päänäkymä, jossa valitun suunnitelman tiedot ja siihen liitetyt harjoitussessiot esitetään ryhmiteltynä ajankohdan mukaan (aikataulutetut session_at-järjestyksessä ja aikatauluttamattomat erikseen).
 - **Used AI?** Yes
 
 ### S3-19 — Calendar UI (Must)
