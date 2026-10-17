@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { RegisterPage } from './pages/RegisterPage';
+import { useAuth } from './context/AuthContext';
 import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { SessionsPage } from './pages/SessionsPage';
 import { SessionFormPage } from './pages/SessionFormPage';
+import { PlansPage } from './pages/PlansPage';
 
-const MainContent: React.FC = () => {
+export const App: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [view, setView] = useState<'login' | 'register'>('login');
-  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'sessions' | 'plans'>('sessions');
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
@@ -17,7 +19,7 @@ const MainContent: React.FC = () => {
         style={{
           borderBottom: '1px solid #e0e0e0',
           paddingBottom: '1rem',
-          marginBottom: '2rem',
+          marginBottom: '1.5rem',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -38,35 +40,76 @@ const MainContent: React.FC = () => {
                 cursor: 'pointer',
                 borderRadius: 4,
                 border: '1px solid #ccc',
-                background: '#f8f9fa',
+                background: '#fff',
               }}
             >
               Kirjaudu ulos
             </button>
           </div>
         ) : (
-          <div>
-            <button
-              onClick={() => setView(view === 'login' ? 'register' : 'login')}
-              style={{
-                padding: '6px 14px',
-                cursor: 'pointer',
-                borderRadius: 4,
-                border: '1px solid #1a73e8',
-                background: '#fff',
-                color: '#1a73e8',
-                fontWeight: 500,
-              }}
-            >
-              {view === 'login' ? 'Siirry rekisteröitymiseen' : 'Siirry kirjautumiseen'}
-            </button>
-          </div>
+          <button
+            onClick={() => setView(view === 'login' ? 'register' : 'login')}
+            style={{
+              padding: '6px 14px',
+              cursor: 'pointer',
+              borderRadius: 4,
+              border: '1px solid #1a73e8',
+              background: '#fff',
+              color: '#1a73e8',
+              fontWeight: 500,
+            }}
+          >
+            {view === 'login' ? 'Siirry rekisteröitymiseen' : 'Siirry kirjautumiseen'}
+          </button>
         )}
       </header>
 
       <main>
         {isAuthenticated ? (
           <div>
+            {!isCreating && !editingSessionId && (
+              <nav
+                style={{
+                  display: 'flex',
+                  gap: '1rem',
+                  marginBottom: '1.5rem',
+                  borderBottom: '2px solid #eee',
+                  paddingBottom: '0.5rem',
+                }}
+              >
+                <button
+                  onClick={() => setActiveTab('sessions')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: activeTab === 'sessions' ? '3px solid #0d6efd' : '3px solid transparent',
+                    padding: '0.5rem 1rem',
+                    fontWeight: activeTab === 'sessions' ? 'bold' : 'normal',
+                    cursor: 'pointer',
+                    color: activeTab === 'sessions' ? '#0d6efd' : '#333',
+                    fontSize: '1rem',
+                  }}
+                >
+                  Harjoitussessiot
+                </button>
+                <button
+                  onClick={() => setActiveTab('plans')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: activeTab === 'plans' ? '3px solid #0d6efd' : '3px solid transparent',
+                    padding: '0.5rem 1rem',
+                    fontWeight: activeTab === 'plans' ? 'bold' : 'normal',
+                    cursor: 'pointer',
+                    color: activeTab === 'plans' ? '#0d6efd' : '#333',
+                    fontSize: '1rem',
+                  }}
+                >
+                  Suunnitelmat (Plans)
+                </button>
+              </nav>
+            )}
+
             {isCreating || editingSessionId ? (
               <SessionFormPage
                 sessionId={editingSessionId}
@@ -83,10 +126,13 @@ const MainContent: React.FC = () => {
                   setEditingSessionId(null);
                 }}
                 onCloned={() => {
-                setEditingSessionId(null);
-                setIsCreating(false);
-              }}
+                  setEditingSessionId(null);
+                  setIsCreating(false);
+                  setActiveTab('sessions');
+                }}
               />
+            ) : activeTab === 'plans' ? (
+              <PlansPage onSelectSession={(id) => setEditingSessionId(id)} />
             ) : (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
@@ -94,12 +140,12 @@ const MainContent: React.FC = () => {
                     onClick={() => setIsCreating(true)}
                     style={{
                       padding: '8px 16px',
-                      background: '#1976d2',
-                      color: '#fff',
+                      backgroundColor: '#1a73e8',
+                      color: 'white',
                       border: 'none',
                       borderRadius: 4,
                       cursor: 'pointer',
-                      fontWeight: 600,
+                      fontWeight: 500,
                     }}
                   >
                     + Luo uusi sessio
@@ -119,10 +165,4 @@ const MainContent: React.FC = () => {
   );
 };
 
-export default function App() {
-  return (
-    <AuthProvider>
-      <MainContent />
-    </AuthProvider>
-  );
-}
+export default App;
