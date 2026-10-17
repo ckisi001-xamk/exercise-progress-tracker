@@ -181,7 +181,7 @@ Skip stretch tickets you did not do.
 ### S3-16 — Edit, delete, and clone session UI (Must)
 
 - **Status:** Done
-- **PR / commit:**
+- **PR / commit:** 283a408
 - **Demonstration:**
   1. **Do this:** Clone from the UI onto a date; optionally show delete confirm.
   2. **Capture:** Clone result in UI.
