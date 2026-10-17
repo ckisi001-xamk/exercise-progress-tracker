@@ -75,3 +75,8 @@ class WorkoutSessionRead(WorkoutSessionBase):
 
     class Config:
         from_attributes = True
+
+class SessionClone(BaseModel):
+    name: Optional[str] = None
+    session_at: Optional[datetime] = None
+    plan_id: Optional[uuid.UUID] = None

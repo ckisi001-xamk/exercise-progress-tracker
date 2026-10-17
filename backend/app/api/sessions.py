@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.core.deps import get_current_user
 from app.models.user import User
-from app.schemas.session import WorkoutSessionCreate, WorkoutSessionRead, WorkoutSessionUpdate
+from app.schemas.session import WorkoutSessionCreate, WorkoutSessionRead, WorkoutSessionUpdate, SessionClone
 from app.services.sessions import SessionService
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
@@ -77,3 +77,13 @@ def duplicate_session(
 ):
     service = SessionService(db)
     return service.duplicate_session(session_id=session_id, user_id=current_user.id)
+
+@router.post("/{session_id}/clone", response_model=WorkoutSessionRead, status_code=status.HTTP_201_CREATED)
+def clone_session_endpoint(
+    session_id: uuid.UUID,
+    data: Optional[SessionClone] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    service = SessionService(db)
+    return service.clone_session(session_id=session_id, user_id=current_user.id, data=data)

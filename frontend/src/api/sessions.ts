@@ -80,6 +80,11 @@ export interface SessionFilters {
   to_date?: string;
 }
 
+export interface CloneSessionPayload {
+  name?: string;
+  session_at?: string | null;
+}
+
 const getAuthHeaders = () => {
   const token = localStorage.getItem('access_token');
   return {
@@ -135,6 +140,30 @@ export async function updateSession(id: string, data: SessionWrite): Promise<Wor
   if (!res.ok) {
     const errorBody = await res.json().catch(() => ({}));
     throw new Error(errorBody.detail || `Päivitys epäonnistui: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function deleteSession(id: string): Promise<void> {
+  const res = await fetch(`http://localhost:8000/sessions/${id}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+  if (!res.ok) {
+    const errorBody = await res.json().catch(() => ({}));
+    throw new Error(errorBody.detail || `Poisto epäonnistui: ${res.status}`);
+  }
+}
+
+export async function cloneSession(id: string, payload: CloneSessionPayload): Promise<WorkoutSession> {
+  const res = await fetch(`http://localhost:8000/sessions/${id}/clone`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorBody = await res.json().catch(() => ({}));
+    throw new Error(errorBody.detail || `Kloonaus epäonnistui: ${res.status}`);
   }
   return res.json();
 }

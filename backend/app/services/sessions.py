@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import uuid
-from typing import List, Optional
+from typing import Any, List, Optional
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select
@@ -163,3 +163,49 @@ class SessionService:
             new_session.items.append(new_item)
 
         return self.repo.create(new_session)
+
+    def clone_session(self, session_id: uuid.UUID, user_id: uuid.UUID, data: Optional[Any] = None) -> WorkoutSession:
+        original = self.repo.get_by_id_for_user(session_id, user_id)
+        if not original:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
+
+        clone_name = getattr(data, "name", None) or original.name
+        clone_session_at = getattr(data, "session_at", None)
+        clone_plan_id = getattr(data, "plan_id", None)
+
+        new_session = WorkoutSession(
+            user_id=user_id,
+            name=clone_name,
+            status="planned",
+            notes=original.notes,
+            intensity=None,
+            plan_id=clone_plan_id,
+            source_session_id=original.id,
+            session_at=clone_session_at,
+        )
+        self.db.add(new_session)
+        self.db.flush()
+
+        for orig_item in original.items:
+            new_item = WorkoutSessionItem(
+                session_id=new_session.id,
+                activity_type_id=orig_item.activity_type_id,
+                sort_order=orig_item.sort_order,
+                notes=orig_item.notes,
+            )
+            self.db.add(new_item)
+            self.db.flush()
+
+            for orig_m in orig_item.measurements:
+                new_m = WorkoutSessionMeasurement(
+                    session_item_id=new_item.id,
+                    unit_type_id=orig_m.unit_type_id,
+                    planned_value=orig_m.planned_value,
+                    actual_value=None,
+                    set_index=orig_m.set_index,
+                )
+                self.db.add(new_m)
+
+        self.db.commit()
+        self.db.refresh(new_session)
+        return new_session
