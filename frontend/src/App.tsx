@@ -6,13 +6,14 @@ import { SessionsPage } from './pages/SessionsPage';
 import { SessionFormPage } from './pages/SessionFormPage';
 import { PlansPage } from './pages/PlansPage';
 import { CalendarPage } from './pages/CalendarPage';
+import { DashboardPage } from './pages/DashboardPage';
 
 export const App: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [view, setView] = useState<'login' | 'register'>('login');
   const [isCreating, setIsCreating] = useState(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'sessions' | 'plans' | 'calendar'>('sessions');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'sessions' | 'plans' | 'calendar'>('dashboard');
 
   return (
     <div style={{ maxWidth: 960, margin: '0 auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
@@ -78,6 +79,21 @@ export const App: React.FC = () => {
                   paddingBottom: '0.5rem',
                 }}
               >
+                <button
+                  onClick={() => setActiveTab('dashboard')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: activeTab === 'dashboard' ? '3px solid #0d6efd' : '3px solid transparent',
+                    padding: '0.5rem 1rem',
+                    fontWeight: activeTab === 'dashboard' ? 'bold' : 'normal',
+                    cursor: 'pointer',
+                    color: activeTab === 'dashboard' ? '#0d6efd' : '#333',
+                    fontSize: '1rem',
+                  }}
+                >
+                  Kojelauta (Dashboard)
+                </button>
                 <button
                   onClick={() => setActiveTab('sessions')}
                   style={{
@@ -146,6 +162,11 @@ export const App: React.FC = () => {
                   setIsCreating(false);
                   setActiveTab('sessions');
                 }}
+              />
+            ) : activeTab === 'dashboard' ? (
+              <DashboardPage
+                onSelectSession={(id) => setEditingSessionId(id)}
+                onCreateSession={() => setIsCreating(true)}
               />
             ) : activeTab === 'plans' ? (
               <PlansPage onSelectSession={(id) => setEditingSessionId(id)} />
