@@ -5,16 +5,17 @@ import { RegisterPage } from './pages/RegisterPage';
 import { SessionsPage } from './pages/SessionsPage';
 import { SessionFormPage } from './pages/SessionFormPage';
 import { PlansPage } from './pages/PlansPage';
+import { CalendarPage } from './pages/CalendarPage';
 
 export const App: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [view, setView] = useState<'login' | 'register'>('login');
   const [isCreating, setIsCreating] = useState(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'sessions' | 'plans'>('sessions');
+  const [activeTab, setActiveTab] = useState<'sessions' | 'plans' | 'calendar'>('sessions');
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
+    <div style={{ maxWidth: 960, margin: '0 auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
       <header
         style={{
           borderBottom: '1px solid #e0e0e0',
@@ -107,6 +108,21 @@ export const App: React.FC = () => {
                 >
                   Suunnitelmat (Plans)
                 </button>
+                <button
+                  onClick={() => setActiveTab('calendar')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: activeTab === 'calendar' ? '3px solid #0d6efd' : '3px solid transparent',
+                    padding: '0.5rem 1rem',
+                    fontWeight: activeTab === 'calendar' ? 'bold' : 'normal',
+                    cursor: 'pointer',
+                    color: activeTab === 'calendar' ? '#0d6efd' : '#333',
+                    fontSize: '1rem',
+                  }}
+                >
+                  Kalenteri (Calendar)
+                </button>
               </nav>
             )}
 
@@ -133,6 +149,8 @@ export const App: React.FC = () => {
               />
             ) : activeTab === 'plans' ? (
               <PlansPage onSelectSession={(id) => setEditingSessionId(id)} />
+            ) : activeTab === 'calendar' ? (
+              <CalendarPage onSelectSession={(id) => setEditingSessionId(id)} />
             ) : (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
