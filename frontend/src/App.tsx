@@ -7,13 +7,14 @@ import { SessionFormPage } from './pages/SessionFormPage';
 import { PlansPage } from './pages/PlansPage';
 import { CalendarPage } from './pages/CalendarPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { GoalsPage } from './pages/GoalsPage';
 
 export const App: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [view, setView] = useState<'login' | 'register'>('login');
   const [isCreating, setIsCreating] = useState(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'sessions' | 'plans' | 'calendar'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'sessions' | 'plans' | 'calendar' | 'goals'>('dashboard');
 
   return (
     <div style={{ maxWidth: 960, margin: '0 auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
@@ -139,6 +140,21 @@ export const App: React.FC = () => {
                 >
                   Kalenteri (Calendar)
                 </button>
+                <button
+                  onClick={() => setActiveTab('goals')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: activeTab === 'goals' ? '3px solid #0d6efd' : '3px solid transparent',
+                    padding: '0.5rem 1rem',
+                    fontWeight: activeTab === 'goals' ? 'bold' : 'normal',
+                    cursor: 'pointer',
+                    color: activeTab === 'goals' ? '#0d6efd' : '#333',
+                    fontSize: '1rem',
+                  }}
+                >
+                  Tavoitteet (Goals)
+                </button>
               </nav>
             )}
 
@@ -172,6 +188,8 @@ export const App: React.FC = () => {
               <PlansPage onSelectSession={(id) => setEditingSessionId(id)} />
             ) : activeTab === 'calendar' ? (
               <CalendarPage onSelectSession={(id) => setEditingSessionId(id)} />
+            ) : activeTab === 'goals' ? (
+              <GoalsPage />
             ) : (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
