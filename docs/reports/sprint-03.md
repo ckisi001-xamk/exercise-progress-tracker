@@ -251,12 +251,13 @@ Skip stretch tickets you did not do.
   5. **Caption:** Swagger-pyynnön 404 Not Found -vastaus todentamassa IDOR-suojauksen toimivuutta toisen käyttäjän sessio-UUID:llä ilman tilavuotoa.
 - **Used AI?** Yes
 
-### S3-23 — Optional Goals UI (Stretch)
+### S3-23 – Optional Goals UI (Stretch)
 
-- **Status:** Done / deferred (why):
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** 5319ae4
 - **Demonstrations:**
-- Screenshot of the optional Goals UI
+  - Screenshot of the optional Goals UI: `docs/reports/images/sprint-03/s3-23-goals.png`
+  - Description: Tavoitteiden hallintanäkymä (Goals UI), jossa käyttäjä voi asettaa mittayksikkö- ja jaksokohtaisia harjoitustavoitteita (viikko/kuukausi) ja tarkastella aktiivisia tavoitteita.
 - **Used AI?** Yes
 
 ### Stretch (if done)
@@ -275,25 +276,30 @@ Two to four technical choices (e.g. 404 vs 403; how clone sets `plan_id`; calend
 
 ## Retrospective
 
-What went well / what to change next sprint (Sprint 4 charts).
+- **What went well:**
+  - Kaikki Sprint 3:n Must- ja Should-vaatimukset (Plans, Calendar, Dashboard recent sessions, virhe/lataustilat, IDOR-dokumentaatio) saatiin maaliin suunnitellussa aikataulussa.
+  - Myös Stretch-tason tavoitenäkymä (S3-23 Goals UI) saatiin toteutettua ja integroitua taustajärjestelmän tietomalliin.
+  - Komponenttien uudelleenkäytettävyys (mm. sessiokortit ja virhetilat) ja API-integraatioiden vakiointi tukivat siistiä arkkitehtuuria.
+  - OWASP Top 10 BOLA/IDOR -testaus vahvisti taustajärjestelmän 404-suojausmallin aukottomuuden.
+- **What to change next sprint (Sprint 4 charts):**
+  - Sprint 4:ssä keskitytään visualisointiin ja analytiikkakaavioihin; varmistetaan heti alusta asti Chart.js / vastaavan kirjaston tyypitykset ja responsiivisuus eri näyttökooille.
+  - Jatketaan järjestelmällistä commit- ja kuittauslinjaa tiketti kerrallaan.
 
 ## Carry-over
 
-Deferred Must/Should, stretch leftovers, risks for [Sprint 4 tickets](../tickets/sprint-04-tickets.md).
+- Ei siirtyviä tehtäviä. Kaikki Sprint 3:n tavoitteet (Must, Should sekä S3-23 Stretch) on suoritettu hyväksytysti.
 
 ## AI usage (sprint-level reflection)
 
-Mark **Used AI?** under each ticket above (`Yes` / `No`). Do **not** write per-ticket reflections there.
-
-Here, cover your **overall** AI use during this sprint (Cursor, ChatGPT, Copilot, local coding assistants, etc.). Product Insights via Ollama in Sprint 5 does **not** count unless you also used an AI assistant to write code.
-
-If you marked **No** on every ticket, write a short note that you did not use AI coding assistants this sprint (you may still answer verification / independence questions briefly).
-
-- **Where AI helped most this sprint** (themes, ticket IDs, or areas—not a ticket-by-ticket dump):
+- **Where AI helped most this sprint:**
+  - React Query -toteutusten, virhetilojen (Empty/Retry states) ja kalenterinäkymän logiikan nopeassa rakentamisessa sekä IDOR-testaustapausten ja -dokumentaation strukturoinnissa.
 - **What I typically accepted from AI suggestions:**
+  - Suorat TypeScript-tyypitykset, API-kutsupohjat, virheenkäsittelyrakenteet ja ITIL/dokumentaatiorungot.
 - **What I typically rejected or reworked, and why:**
-- **How I verified AI-assisted work** (tests, `/docs`, manual demos, reviews):
-- **What I can now explain or do independently** that I relied on AI for earlier:
+  - Korjattiin AI:n ehdottamat geneeriset kirjastoriippuvuudet (kuten ylimääräiset Axios/apiClient-rakenteet) vastaamaan olemassa olevaa natiivia fetch/authHeader-arkkitehtuuria. Lisäksi sovitettiin Pydantic-skeemat vastaamaan täsmälleen kannan relaatioita ilman ylimääräisiä kenttiä.
+- **How I verified AI-assisted work:**
+  - Ajettiin konttien sisäiset buildit (`npm run build`), Swagger-rajapintatestit (`/docs`), Docker Python -tarkistukset tietokannasta ja selaimen päästä-päähän -toiminnallisuustestaus.
+- **What I can now explain or do independently that I relied on AI for earlier:**
+  - JWT-autentikaation kulku Swaggerin Bearer-testauksessa sekä IDOR/BOLA-torjunnan arkkitehtuurivalinnat (404 Not Found tilavuotojen estämiseksi).
 - **Anything I would do differently with AI next sprint:**
-
-Do not paste secrets, full JWTs, or `.env` values.
+  - Annetaan suoraan olemassa olevat skeemat ja API-asiakastiedostot syötteenä heti uutta UI-komponenttia luotaessa tyyppivirheiden minimoimiseksi.
