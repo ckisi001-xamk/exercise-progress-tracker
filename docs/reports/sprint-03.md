@@ -220,14 +220,13 @@ Skip stretch tickets you did not do.
 
 ### S3-20 — Dashboard recent sessions (Must)
 
-- **Status:** Pending
-- **PR / commit:**
-- **Demonstration:**
+- **Status:** Done
+- **PR / commit:** 27c62bf
   1. **Do this:** Open Dashboard after login.
   2. **Capture:** Recent sessions or empty state.
   3. **Must show:** Current user only.
   4. **Save as:** `docs/reports/images/sprint-03/s3-20-dashboard.png`
-  5. **Caption:**
+  5. **Caption:** Kojelautanäkymä sisäänkirjautumisen jälkeen, jossa esitetään kirjautuneen käyttäjän viisi viimeisintä harjoitussessiota tiloineen ja aikaleimoineen.
 - **Used AI?** Yes
 
 ### S3-21 — Empty and error states (Should)
