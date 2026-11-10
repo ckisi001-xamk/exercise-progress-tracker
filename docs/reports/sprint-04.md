@@ -92,16 +92,16 @@ Skip stretch tickets you did not do. Stretch: Status, PR, and Used AI? for each 
 
 ### S4-08 — Stats streaks endpoint (Must)
 
-- **Status:**
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** d7836ca
 - **Demonstration:**
   1. **Do this:** In `/docs`, call `GET /stats/streaks`.
   2. **Capture:** Screenshot of the streaks JSON.
   3. **Must show:** Streak metrics returned for the authenticated user (document whether null `session_at` rows are excluded).
   4. **Must not show:** Tokens.
   5. **Save as:** `docs/reports/images/sprint-04/s4-08-streaks.png`
-  6. **Caption (1–2 sentences):**
-- **Used AI?** Yes / No
+  6. **Caption (1–2 sentences):** Suojattu treeniputkien rajapinta (GET /stats/streaks) laskee nykyisen ja pisimmän aktiivisen putken kalenteripäivinä; sessiot ilman session_at-aikaleimaa rajataan automaattisesti pois laskennasta.
+- **Used AI?** Yes
 
 ### S4-09 — User-scoped stats queries (Must)
 
