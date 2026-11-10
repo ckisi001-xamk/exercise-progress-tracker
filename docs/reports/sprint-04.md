@@ -47,9 +47,9 @@ Skip stretch tickets you did not do. Stretch: Status, PR, and Used AI? for each 
 
 ### S4-04 — Streak metrics (Must)
 
-- **Status:**
-- **PR / commit:**
-- **Used AI?** Yes / No
+- **Status:** Done
+- **PR / commit:** dbbb149
+- **Used AI?** Yes
 
 ### S4-05 — Analytics unit tests (Must)
 
