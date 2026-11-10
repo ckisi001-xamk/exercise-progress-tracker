@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Dict, List, Literal, Optional
 from pydantic import BaseModel
 
 
@@ -13,5 +12,16 @@ class SummaryResponse(BaseModel):
     session_count: int
     total_duration_min: float
     total_distance_km: float
-    avg_intensity: float
+    avg_intensity: Optional[float] = None
     by_activity: Dict[str, ActivitySummary]
+
+
+class ProgressPoint(BaseModel):
+    period_label: str
+    value: float
+
+
+class ProgressResponse(BaseModel):
+    metric: str
+    granularity: str
+    series: List[ProgressPoint]

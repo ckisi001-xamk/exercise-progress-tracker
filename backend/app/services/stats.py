@@ -1,25 +1,23 @@
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 from sqlalchemy.orm import Session, joinedload
 
 from app.models.workout_session import WorkoutSession
 from app.models.workout_session_item import WorkoutSessionItem
 from app.models.activity_type import ActivityType
 from app.models.unit_type import UnitType
-from app.services.analytics import MeasurementInput, SessionInput, compute_summary
+from app.services.analytics import MeasurementInput, SessionInput, compute_summary, compute_progress_series
 
 
-def get_user_summary(
+def _load_user_session_inputs(
     db: Session,
     user_id: str,
     date_from: Optional[datetime] = None,
     date_to: Optional[datetime] = None,
-) -> Dict[str, Any]:
-    # 1. Lookup-taulut muistiin yhdellä keveällä SELECTillä
+) -> List[SessionInput]:
     unit_map = {str(u.id): u.slug for u in db.query(UnitType).all()}
     act_map = {str(a.id): a.name for a in db.query(ActivityType).all()}
 
-    # 2. Haetaan sessiot ja niihin kuuluvat itemit + mittaukset
     query = (
         db.query(WorkoutSession)
         .options(
@@ -33,8 +31,6 @@ def get_user_summary(
         query = query.filter(WorkoutSession.session_at <= date_to)
 
     models = query.all()
-
-    # 3. Muodostetaan analytiikkakerroksen SessionInput-oliot
     inputs = []
     for m in models:
         meas = []
@@ -70,5 +66,37 @@ def get_user_summary(
                 measurements=meas,
             )
         )
+    return inputs
 
+
+def get_user_summary(
+    db: Session,
+    user_id: str,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> Dict[str, Any]:
+    inputs = _load_user_session_inputs(db, user_id, date_from, date_to)
     return compute_summary(inputs)
+
+
+def get_user_progress(
+    db: Session,
+    user_id: str,
+    metric: Literal["sessions", "duration_min", "distance_km"] = "sessions",
+    granularity: Literal["week", "month"] = "week",
+    activity_type_id: Optional[str] = None,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> Dict[str, Any]:
+    inputs = _load_user_session_inputs(db, user_id, date_from, date_to)
+    series = compute_progress_series(
+        sessions=inputs,
+        metric=metric,
+        granularity=granularity,
+        activity_type_id=activity_type_id,
+    )
+    return {
+        "metric": metric,
+        "granularity": granularity,
+        "series": series,
+    }
