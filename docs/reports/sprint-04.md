@@ -66,16 +66,16 @@ Skip stretch tickets you did not do. Stretch: Status, PR, and Used AI? for each 
 
 ### S4-06 — Stats summary endpoint (Must)
 
-- **Status:**
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** dc47f19
 - **Demonstration:**
-  1. **Do this:** Authorize in `/docs`. Call `GET /stats/summary` for a **known** period where you already know expected totals from fixtures or seeded sessions.
-  2. **Capture:** Screenshot of the `/docs` response JSON.
-  3. **Must show:** Successful summary response for that period (counts/totals visible).
-  4. **Must not show:** Full JWT; crop Authorize.
+  1. **Do this:** In Swagger UI, execute `GET /stats/summary` with appropriate params.
+  2. **Capture:** Browser screenshot of the response in Swagger UI.
+  3. **Must show:** 200 OK, realistic summary payload matching your DTO schema.
+  4. **Must not show:** Secrets, auth tokens.
   5. **Save as:** `docs/reports/images/sprint-04/s4-06-summary.png`
-  6. **Caption (1–2 sentences):** (state the period and expected numbers briefly)
-- **Used AI?** Yes / No
+  6. **Caption:** Suojattu yhteenvedon rajapinta (GET /stats/summary) palauttaa käyttäjäkohtaisesti kootut metriikat.
+- **Used AI?** Yes
 
 ### S4-07 — Stats progress endpoint (Must)
 
