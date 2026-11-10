@@ -4,9 +4,10 @@ No FastAPI, no SQLAlchemy, no direct DB/IO access.
 All inputs must be scoped to the authenticated user before passing into this module.
 """
 
+from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 
 @dataclass(frozen=True)
@@ -38,9 +39,8 @@ class SessionInput:
 def compute_summary(sessions: List[SessionInput]) -> Dict[str, Any]:
     """
     Computes period summary metrics over a pre-filtered list of sessions.
-    Unscheduled sessions (session_at is None) are excluded from period counts.
-    Empty input returns zero totals and empty breakdowns safely.
-    Average intensity is 0.0 if no sessions have intensity defined.
+    Unscheduled sessions (session_at is None) are excluded.
+    Empty input safely returns zero totals.
     """
     valid_sessions = [s for s in sessions if s.session_at is not None]
 
@@ -91,3 +91,46 @@ def compute_summary(sessions: List[SessionInput]) -> Dict[str, Any]:
         "avg_intensity": avg_intensity,
         "by_activity": by_activity,
     }
+
+
+def compute_progress_series(
+    sessions: List[SessionInput],
+    metric: Literal["sessions", "duration_min", "distance_km"] = "sessions",
+    granularity: Literal["week", "month"] = "week",
+    activity_type_id: Optional[str] = None,
+) -> List[Dict[str, Any]]:
+    """
+    Groups sessions into ISO-week or month buckets.
+    Excludes sessions without session_at.
+    Returns list of dicts: [{"period_label": "2026-W45", "value": 3.0}, ...]
+    """
+    valid = [s for s in sessions if s.session_at is not None]
+    if activity_type_id:
+        valid = [s for s in valid if s.activity_type_id == activity_type_id]
+
+    if not valid:
+        return []
+
+    buckets: Dict[str, float] = defaultdict(float)
+
+    for s in valid:
+        assert s.session_at is not None
+        if granularity == "week":
+            iso_year, iso_week, _ = s.session_at.isocalendar()
+            label = f"{iso_year}-W{iso_week:02d}"
+        else:
+            label = s.session_at.strftime("%Y-%m")
+
+        if metric == "sessions":
+            buckets[label] += 1.0
+        elif metric == "duration_min":
+            buckets[label] += sum(
+                m.value for m in s.measurements if m.unit_slug in ("duration_min", "duration")
+            )
+        elif metric == "distance_km":
+            buckets[label] += sum(
+                m.value for m in s.measurements if m.unit_slug in ("distance_km", "distance")
+            )
+
+    sorted_labels = sorted(buckets.keys())
+    return [{"period_label": lbl, "value": round(buckets[lbl], 2)} for lbl in sorted_labels]
