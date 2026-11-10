@@ -134,3 +134,55 @@ def compute_progress_series(
 
     sorted_labels = sorted(buckets.keys())
     return [{"period_label": lbl, "value": round(buckets[lbl], 2)} for lbl in sorted_labels]
+
+
+def compute_streaks(sessions: List[SessionInput], today: Optional[datetime] = None) -> Dict[str, int]:
+    """
+    Computes consecutive active calendar days (current and longest streak).
+    
+    Definition:
+    - Active day = at least one session with non-null session_at on that calendar date.
+    - Multiple sessions on the same date count as 1 active day.
+    - If today has no session, current streak checks if yesterday had one to stay active;
+      otherwise current streak drops to 0.
+    - Empty or sparse histories return 0 safely.
+    """
+    dates = sorted({s.session_at.date() for s in sessions if s.session_at is not None})
+    if not dates:
+        return {"current": 0, "longest": 0}
+
+    # Pisin putki
+    longest = 0
+    current_run = 0
+    prev_date = None
+
+    for d in dates:
+        if prev_date is None or (d - prev_date).days == 1:
+            current_run += 1
+        elif (d - prev_date).days > 1:
+            current_run = 1
+        longest = max(longest, current_run)
+        prev_date = d
+
+    # Nykyinen putki suhteessa vertailupäivään (tai viimeisimpään sessioon)
+    ref_date = today.date() if today else dates[-1]
+    
+    # Tarkistetaan onko viimeisin sessiopäivä tuore (tänään tai eilen)
+    last_active = dates[-1]
+    days_since_last = (ref_date - last_active).days
+
+    if days_since_last > 1:
+        current = 0
+    else:
+        current = 0
+        target = last_active
+        date_set = set(dates)
+        from datetime import timedelta
+        while target in date_set:
+            current += 1
+            target -= timedelta(days=1)
+
+    return {
+        "current": current,
+        "longest": longest,
+    }
