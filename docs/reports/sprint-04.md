@@ -105,16 +105,16 @@ Skip stretch tickets you did not do. Stretch: Status, PR, and Used AI? for each 
 
 ### S4-09 — User-scoped stats queries (Must)
 
-- **Status:**
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** 778af4a
 - **Demonstration:**
   1. **Do this:** As User A, call a stats endpoint and note totals. As User B (different account with different sessions), call the same endpoint. Confirm User A’s response does **not** include User B’s sessions (and vice versa).
   2. **Capture:** Two screenshots (A and B) or one collage; emails only in the caption.
   3. **Must show:** Aggregate IDOR prevented—User B’s data absent from User A’s stats.
   4. **Must not show:** Tokens or passwords.
   5. **Save as:** `docs/reports/images/sprint-04/s4-09-scoped-stats.png`
-  6. **Caption (1–2 sentences):**
-- **Used AI?** Yes / No
+  6. **Caption (1–2 sentences):** Käyttäjäkohtainen tietoturvaeristys (aggregate IDOR -suojaus) varmistettu: Käyttäjän A (user@example.com) treeniputket ovat 1 ja 2, kun taas Käyttäjän B (user_b@example.com) vastaus palauttaa puhtaat nollat samasta GET /stats/streaks -rajapinnasta.
+- **Used AI?** Yes
 
 ### S4-10 — Recharts setup (Must)
 
