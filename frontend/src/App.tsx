@@ -7,6 +7,7 @@ import { SessionFormPage } from './pages/SessionFormPage';
 import { PlansPage } from './pages/PlansPage';
 import { CalendarPage } from './pages/CalendarPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { ProgressPage } from './pages/ProgressPage';
 import { GoalsPage } from './pages/GoalsPage';
 
 export const App: React.FC = () => {
@@ -14,7 +15,7 @@ export const App: React.FC = () => {
   const [view, setView] = useState<'login' | 'register'>('login');
   const [isCreating, setIsCreating] = useState(false);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'sessions' | 'plans' | 'calendar' | 'goals'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'progress' | 'sessions' | 'plans' | 'calendar' | 'goals'>('dashboard');
 
   return (
     <div style={{ maxWidth: 960, margin: '0 auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
@@ -95,6 +96,23 @@ export const App: React.FC = () => {
                 >
                   Kojelauta (Dashboard)
                 </button>
+
+                <button
+                  onClick={() => setActiveTab('progress')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: activeTab === 'progress' ? '3px solid #0d6efd' : '3px solid transparent',
+                    padding: '0.5rem 1rem',
+                    fontWeight: activeTab === 'progress' ? 'bold' : 'normal',
+                    cursor: 'pointer',
+                    color: activeTab === 'progress' ? '#0d6efd' : '#333',
+                    fontSize: '1rem',
+                  }}
+                >
+                  Edistyminen (Progress)
+                </button>
+
                 <button
                   onClick={() => setActiveTab('sessions')}
                   style={{
@@ -184,6 +202,8 @@ export const App: React.FC = () => {
                 onSelectSession={(id) => setEditingSessionId(id)}
                 onCreateSession={() => setIsCreating(true)}
               />
+            ) : activeTab === 'progress' ? (
+              <ProgressPage />
             ) : activeTab === 'plans' ? (
               <PlansPage onSelectSession={(id) => setEditingSessionId(id)} />
             ) : activeTab === 'calendar' ? (
