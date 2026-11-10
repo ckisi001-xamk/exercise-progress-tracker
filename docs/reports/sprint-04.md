@@ -4,10 +4,10 @@ Copy this file to `docs/reports/sprint-04.md` in **your** repo and fill the blan
 
 | Field | Your answer |
 | ----- | ----------- |
-| **Dates** | |
-| **Names** | |
-| **Repo URL** | |
-| **Branch** | |
+| **Dates** | 10.11.2026 |
+| **Names** | Kimmo Silvennoinen |
+| **Repo URL** | https://github.com/ckisi001-xamk/exercise-progress-tracker |
+| **Branch** | main |
 
 Tickets: [sprint-04-tickets.md](../tickets/sprint-04-tickets.md) · Index: [../README.md](../README.md)
 
@@ -29,15 +29,15 @@ Skip stretch tickets you did not do. Stretch: Status, PR, and Used AI? for each 
 
 ### S4-01 — Analytics module skeleton (Must)
 
-- **Status:** Done / deferred (why):
-- **PR / commit:**
-- **Used AI?** Yes / No
+- **Status:** Done
+- **PR / commit:** 918cf94
+- **Used AI?** Yes
 
 ### S4-02 — Summary metrics (Must)
 
-- **Status:**
-- **PR / commit:**
-- **Used AI?** Yes / No
+- **Status:** Done
+- **PR / commit:** c359574
+- **Used AI?** Yes
 
 ### S4-03 — Progress time series (Must)
 
