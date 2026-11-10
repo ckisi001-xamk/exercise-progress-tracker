@@ -6,7 +6,7 @@ All inputs must be scoped to the authenticated user before passing into this mod
 
 from collections import defaultdict
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from typing import Any, Dict, List, Literal, Optional
 
 
@@ -37,11 +37,6 @@ class SessionInput:
 
 
 def compute_summary(sessions: List[SessionInput]) -> Dict[str, Any]:
-    """
-    Computes period summary metrics over a pre-filtered list of sessions.
-    Unscheduled sessions (session_at is None) are excluded.
-    Empty input safely returns zero totals.
-    """
     valid_sessions = [s for s in sessions if s.session_at is not None]
 
     if not valid_sessions:
@@ -99,11 +94,6 @@ def compute_progress_series(
     granularity: Literal["week", "month"] = "week",
     activity_type_id: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
-    """
-    Groups sessions into ISO-week or month buckets.
-    Excludes sessions without session_at.
-    Returns list of dicts: [{"period_label": "2026-W45", "value": 3.0}, ...]
-    """
     valid = [s for s in sessions if s.session_at is not None]
     if activity_type_id:
         valid = [s for s in valid if s.activity_type_id == activity_type_id]
@@ -139,19 +129,19 @@ def compute_progress_series(
 def compute_streaks(sessions: List[SessionInput], today: Optional[datetime] = None) -> Dict[str, int]:
     """
     Computes consecutive active calendar days (current and longest streak).
-    
+
     Definition:
-    - Active day = at least one session with non-null session_at on that calendar date.
+    - Active day = at least one session with non-null session_at.
     - Multiple sessions on the same date count as 1 active day.
-    - If today has no session, current streak checks if yesterday had one to stay active;
-      otherwise current streak drops to 0.
-    - Empty or sparse histories return 0 safely.
+    - Current streak counts backward from reference date (today).
+      If today has no session, checks yesterday. If neither, current streak is 0.
+    - Longest streak is evaluated across all active dates in history.
     """
     dates = sorted({s.session_at.date() for s in sessions if s.session_at is not None})
     if not dates:
         return {"current": 0, "longest": 0}
 
-    # Pisin putki
+    # Pisin historiallinen putki
     longest = 0
     current_run = 0
     prev_date = None
@@ -164,23 +154,21 @@ def compute_streaks(sessions: List[SessionInput], today: Optional[datetime] = No
         longest = max(longest, current_run)
         prev_date = d
 
-    # Nykyinen putki suhteessa vertailupäivään (tai viimeisimpään sessioon)
-    ref_date = today.date() if today else dates[-1]
-    
-    # Tarkistetaan onko viimeisin sessiopäivä tuore (tänään tai eilen)
-    last_active = dates[-1]
-    days_since_last = (ref_date - last_active).days
+    # Nykyinen putki suhteessa pyydettyyn vertailupäivään
+    ref_day = today.date() if today else dates[-1]
+    date_set = set(dates)
 
-    if days_since_last > 1:
-        current = 0
+    if ref_day in date_set:
+        cursor = ref_day
+    elif (ref_day - timedelta(days=1)) in date_set:
+        cursor = ref_day - timedelta(days=1)
     else:
-        current = 0
-        target = last_active
-        date_set = set(dates)
-        from datetime import timedelta
-        while target in date_set:
-            current += 1
-            target -= timedelta(days=1)
+        cursor = None
+
+    current = 0
+    while cursor and cursor in date_set:
+        current += 1
+        cursor -= timedelta(days=1)
 
     return {
         "current": current,
