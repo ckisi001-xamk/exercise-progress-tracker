@@ -118,9 +118,9 @@ Skip stretch tickets you did not do. Stretch: Status, PR, and Used AI? for each 
 
 ### S4-10 — Recharts setup (Must)
 
-- **Status:**
-- **PR / commit:**
-- **Used AI?** Yes / No
+- **Status:** Done
+- **PR / commit:** ea3fb07
+- **Used AI?** Yes
 
 ### S4-11 — Progress page charts (Must)
 
