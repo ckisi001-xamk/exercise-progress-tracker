@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.core.deps import get_current_user
 from app.models.user import User
-from app.schemas.stats import ProgressResponse, SummaryResponse
+from app.schemas.stats import ProgressResponse, SummaryResponse, StreakResponse
 from app.services import stats as stats_service
 
 router = APIRouter(prefix="/stats", tags=["stats"])
@@ -45,4 +45,15 @@ def get_progress(
         activity_type_id=activity_type_id,
         date_from=date_from,
         date_to=date_to,
+    )
+
+
+@router.get("/streaks", response_model=StreakResponse)
+def get_streaks(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return stats_service.get_user_streaks(
+        db=db,
+        user_id=str(current_user.id),
     )

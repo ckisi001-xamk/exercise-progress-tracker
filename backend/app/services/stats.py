@@ -6,7 +6,7 @@ from app.models.workout_session import WorkoutSession
 from app.models.workout_session_item import WorkoutSessionItem
 from app.models.activity_type import ActivityType
 from app.models.unit_type import UnitType
-from app.services.analytics import MeasurementInput, SessionInput, compute_summary, compute_progress_series
+from app.services.analytics import MeasurementInput, SessionInput, compute_summary, compute_progress_series, compute_streaks
 
 
 def _load_user_session_inputs(
@@ -100,3 +100,8 @@ def get_user_progress(
         "granularity": granularity,
         "series": series,
     }
+
+
+def get_user_streaks(db: Session, user_id: str) -> Dict[str, int]:
+    inputs = _load_user_session_inputs(db, user_id)
+    return compute_streaks(sessions=inputs)

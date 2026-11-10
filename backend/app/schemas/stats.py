@@ -25,3 +25,8 @@ class ProgressResponse(BaseModel):
     metric: str
     granularity: str
     series: List[ProgressPoint]
+
+
+class StreakResponse(BaseModel):
+    current: int
+    longest: int
