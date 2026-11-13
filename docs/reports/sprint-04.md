@@ -236,10 +236,6 @@ Sprint 4 is **three weeks**.
 
 Two to four technical choices with why (for example how you define a streak, which `session_at` rows count).
 
-## Decisions
-
-Two to four technical choices with why (for example how you define a streak, which `session_at` rows count).
-
 1. **Puhdas Python-laskentakerros (`services/analytics.py`):** Aggregointilogiikka erotettiin täysin FastAPI- ja SQLAlchemy-riippuvuuksista. Tämä mahdollistaa deterministiset, millisekunneissa ajettavat `pytest`-yksikkötestit ilman konttiympäristöä ja takaa saman laskentatotuuden sekä UI:lle että Sprint 5:n tekoälyanalyysille.
 2. **Mittausyksikköjen slug-pohjainen aggregointi ja `session_at`-rajaus:** Kesto (`duration_min`) ja matka (`distance_km`) lasketaan toteutuneista mittausriveistä yksikköslugien perusteella kiinteiden sarakkeiden sijaan. Aikasarjat ja treeniputket huomioivat vain aikataulutetut sessiot (`session_at IS NOT NULL`), jotta suunnittelemattomat mallipohjat eivät vääristä toteumatilastoja.
 3. **Kalenteripäiväpohjainen treeniputkimääritelmä (Streaks):** Aktiivinen putki lasketaan uniikeista kalenteripäivistä, joilla on vähintään yksi ajastettu sessio (`session_at`). Useampi sessio samana päivänä lasketaan yhdeksi aktiiviseksi päiväksi, ja nykyinen putki (`current`) huomioi eilisen päivän, jos kuluvana päivänä ei ole vielä kirjattua suoritusta.
