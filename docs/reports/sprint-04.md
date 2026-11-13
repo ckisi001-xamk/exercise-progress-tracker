@@ -151,15 +151,15 @@ Skip stretch tickets you did not do. Stretch: Status, PR, and Used AI? for each 
 ### S4-13 — Dashboard stat widgets (Must)
 
 - **Status:**
-- **PR / commit:**
+- **PR / commit:** f6ee521
 - **Demonstration:**
   1. **Do this:** Open Dashboard for the **same** period you used on Progress. Compare widget numbers to Progress / `/stats/summary`.
   2. **Capture:** Screenshot of Dashboard widgets.
   3. **Must show:** Period widgets (session count, totals, average intensity, or your implemented set) matching the same period as Progress.
   4. **Must not show:** Tokens or another user’s stats.
   5. **Save as:** `docs/reports/images/sprint-04/s4-13-dashboard.png`
-  6. **Caption (1–2 sentences):**
-- **Used AI?** Yes / No
+  6. **Caption (1–2 sentences):** Kojelaudalle lisätyt koontikortit hakevat luvut GET /stats/summary -rajapinnasta (4 ajastettua sessiota, 2 h 20 min, 8.0 km, intensiteetti 8.0/10) ja toimivat rinnakkain viimeisimpien sessioiden listauksen kanssa.
+- **Used AI?** Yes
 
 ### S4-14 — Stats README notes (Should)
 
