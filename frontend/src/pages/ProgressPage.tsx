@@ -1,59 +1,87 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ResponsiveContainer,
   LineChart,
   Line,
   XAxis,
   YAxis,
-  Tooltip,
   CartesianGrid,
+  Tooltip,
 } from 'recharts';
 
-const sampleData = [
-  { period_label: '2026-W40', sessions: 2 },
-  { period_label: '2026-W41', sessions: 4 },
-  { period_label: '2026-W42', sessions: 3 },
-  { period_label: '2026-W43', sessions: 1 },
-];
+interface ProgressPoint {
+  period_label: string;
+  value: number;
+}
+
+interface ProgressResponse {
+  metric: string;
+  granularity: string;
+  series: ProgressPoint[];
+}
 
 export const ProgressPage: React.FC = () => {
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Edistyminen ja analytiikka</h2>
-      <p style={{ color: '#64748b' }}>
-        S4-10: Alustus staattisella datalla (Recharts setup)
-      </p>
+  const [data, setData] = useState<ProgressPoint[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '800px',
-          height: 350,
-          marginTop: '1.5rem',
-          background: '#ffffff',
-          padding: '1rem',
-          borderRadius: '8px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        }}
-      >
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={sampleData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="period_label" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="sessions"
-              stroke="#2563eb"
-              strokeWidth={2}
-              dot={{ r: 4 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+  useEffect(() => {
+    const fetchProgress = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const token = localStorage.getItem('access_token');
+        const res = await fetch('http://localhost:8000/stats/progress?metric=sessions&granularity=week', {
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error(`Rajapintavirhe: ${res.status}`);
+        }
+
+        const json: ProgressResponse = await res.json();
+        setData(json.series || []);
+      } catch (err: any) {
+        setError(err.message || 'Datan lataus epäonnistui');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProgress();
+  }, []);
+
+  return (
+    <div style={{ padding: '1rem 0' }}>
+      <h2 style={{ marginBottom: '1rem' }}>Edistyminen ja analytiikka</h2>
+
+      {loading && <p>Ladataan edistymistietoja...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {!loading && !error && (
+        <div style={{ width: '100%', height: 350, background: '#fff', padding: '1rem', borderRadius: 8 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data} margin={{ top: 10, right: 40, left: 0, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="period_label" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#0d6efd"
+                strokeWidth={2}
+                dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
+                name="Sessiot"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 };
-
-export default ProgressPage;
