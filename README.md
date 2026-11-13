@@ -33,3 +33,5 @@ Monorepo full stack -verkkosovellukselle (FastAPI, React + TypeScript, PostgreSQ
 - **Tietokantayhteys:** Konttien sisäinen liikenne käyttää isäntänimenä `db`, ei `localhost`.
 
 Dokumentaatio: [docs/sprints/README.md](docs/sprints/README.md)
+
+- Analytics & Stats API Contract: [docs/stats.md] (docs/stats.md) for `/stats/*` endpoints, `session_at` period/streak rules, and `pytest` commands.
