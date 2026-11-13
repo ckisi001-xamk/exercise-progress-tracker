@@ -16,6 +16,7 @@ Tickets: [sprint-04-tickets.md](../tickets/sprint-04-tickets.md) · Index: [../R
 From the tickets: turn stored sessions into stats and charts you can explain. You are done when stats endpoints match known fixtures; analytics unit tests pass without the full UI; Progress shows sessions over time and distance/intensity by activity; Dashboard period widgets match the API.
 
 In your words (2–3 sentences): did you meet that, and what is still rough?
+Kaikki Sprint 4:n Must- ja Should-tavoitteet (S4-01–S4-14) saavutettiin täysimääräisesti: puhdas Python-analytiikkamoottori läpäisee yksikkötestit ilman tietokanta- tai UI-riippuvuuksia, /stats/*-rajapinnat noudattavat käyttäjäkohtaista IDOR-eristystä, ja Edistyminen- sekä Kojelauta-näkymät päivittyvät dynaamisesti samoilla aggregaateilla. Jatkossa kehitettäväksi jäävät vapaaehtoiset Stretch-ominaisuudet (tavoitteiden valmiusprosentit, aikavälien vertailu ja CSV-vienti) sekä testiaineiston monipuolistaminen useammalle kuukaudelle.
 
 ## Tickets
 
@@ -221,29 +222,43 @@ For each stretch below that you completed: Status, PR / commit, Used AI? Add Dem
 
 Sprint 4 is **three weeks**.
 
-- **Week 1** (analytics module + unit tests):
-- **Week 2** (`/stats/summary`, `/stats/progress`, `/stats/streaks`):
-- **Week 3** (Progress charts, period controls, Dashboard widgets):
-- Who did what:
-- One blocker and how you unblocked it:
+## How we worked
+
+Sprint 4 is **three weeks**.
+
+- **Week 1** (analytics module + unit tests): Toteutettiin puhdas Python-analytiikkakerros (`backend/app/services/analytics.py`) tietotyypeillä ja rakennettiin kattava `pytest`-yksikkötestipaketti (`backend/tests/test_analytics.py`) ilman I/O- tai tietokantariippuvuuksia (S4-01–S4-05).
+- **Week 2** (`/stats/summary`, `/stats/progress`, `/stats/streaks`): Julkaistiin kerrosarkkitehtuurin (`api` → `services` → `repositories`) mukaiset Pydantic-validoidut tilastorajapinnat ja varmistettiin kahden käyttäjän testillä tiukka käyttäjäkohtainen tietoturvaeristys (aggregate IDOR -suojaus) (S4-06–S4-09).
+- **Week 3** (Progress charts, period controls, Dashboard widgets): Integroitiin Recharts-kaaviot, toteutettiin dynaamiset aikaväli- ja tarkkuuskontrollit Edistyminen-näkymään, lisättiin `/stats/summary`-koontikortit Kojelaudalle sekä dokumentoitiin rajapintasopimus tiedostoon `docs/stats.md` (S4-10–S4-14).
+- **Who did what:** Kimmo Silvennoinen vastasi yksin koko Sprint 4:n arkkitehtuurista, backend- ja frontend-toteutuksista, tietoturvatestauksesta, dokumentaatiosta sekä versionhallinnasta.
+- **One blocker and how you unblocked it:** Frontendin tilastokutsut palauttivat aluksi `401 Unauthorized` -virheen token-avaimen (`token` vs. `access_token`) ristiriidan vuoksi, ja `DashboardPage.tsx`-tiedoston JSX-rakenteessa esiintyi päällekkäisiä lohkoja. Ongelmat ratkaistiin yhtenäistämällä JWT-avaimen haku molempiin komponentteihin ja siivoamalla JSX-rakenne.
 
 ## Decisions
 
 Two to four technical choices with why (for example how you define a streak, which `session_at` rows count).
 
-1.
-2.
+## Decisions
+
+Two to four technical choices with why (for example how you define a streak, which `session_at` rows count).
+
+1. **Puhdas Python-laskentakerros (`services/analytics.py`):** Aggregointilogiikka erotettiin täysin FastAPI- ja SQLAlchemy-riippuvuuksista. Tämä mahdollistaa deterministiset, millisekunneissa ajettavat `pytest`-yksikkötestit ilman konttiympäristöä ja takaa saman laskentatotuuden sekä UI:lle että Sprint 5:n tekoälyanalyysille.
+2. **Mittausyksikköjen slug-pohjainen aggregointi ja `session_at`-rajaus:** Kesto (`duration_min`) ja matka (`distance_km`) lasketaan toteutuneista mittausriveistä yksikköslugien perusteella kiinteiden sarakkeiden sijaan. Aikasarjat ja treeniputket huomioivat vain aikataulutetut sessiot (`session_at IS NOT NULL`), jotta suunnittelemattomat mallipohjat eivät vääristä toteumatilastoja.
+3. **Kalenteripäiväpohjainen treeniputkimääritelmä (Streaks):** Aktiivinen putki lasketaan uniikeista kalenteripäivistä, joilla on vähintään yksi ajastettu sessio (`session_at`). Useampi sessio samana päivänä lasketaan yhdeksi aktiiviseksi päiväksi, ja nykyinen putki (`current`) huomioi eilisen päivän, jos kuluvana päivänä ei ole vielä kirjattua suoritusta.
+4. **Aggregate IDOR -esto tietokantatasolla:** Kaikki `/stats/*`-reitit lukevat käyttäjätunnisteen yksinomaan validoidusta Bearer JWT -tokenista (`current_user.id`) ja suodattavat rivit repositoriokerroksessa ennen aggregointia; asiakkaan syöttämää `user_id`-parametria ei koskaan hyväksytä.
 
 ## What we learned
 
 Note what you actually used. Tools this sprint: pytest, dataclasses / TypedDict, Recharts, TanStack Query (period filters). Sprint 4 Must is **pure Python** in the API—not pandas.
 
-- What clicked:
-- One thing you would do differently:
+- What clicked: Puhtaiden funktioiden ja Pydantic-DTO-skeemojen yhdistelmä teki kerrosarkkitehtuurista erittäin selkeän ja helpon testata. TanStack Queryn kyselyavaimet (`queryKey`) ja kontrolloidut suodatintilat pitivät Kojelaudan ja Edistyminen-näkymän luvut synkronoituna rajapinnan kanssa.
+- One thing you would do differently: Laajempi monen kuukauden ja usean lajityypin testiaineisto olisi kannattanut luoda heti Viikolla 1, jotta kuukausitason graafit ja keski-intensiteettilaskenta olisivat näyttäneet useamman datapisteen kehityskaaren suoraan ilman manuaalista lisäsyöttöä.
 
 ## Carry-over
 
 Deferred Must/Should, stretch leftovers, risks for [Sprint 5 tickets](../tickets/sprint-05-tickets.md) (Ollama insights).
+
+- **Deferred Must/Should:** Ei siirtyviä Must- tai Should-tikettejä; kaikki S4-01–S4-14 ovat valmiina ja raportoituina.
+- **Stretch leftovers:** Vapaaehtoiset lisätiketit S4-S1 (Goal progress percent), S4-S2 (Period-over-period) ja S4-S3 (CSV export) jätettiin toteuttamatta aikataulun puitteissa.
+- **Risks for Sprint 5 (Ollama insights):** Paikallisen kielimallin (Ollama) vasteaika ja konteksti-ikkunan hallinta sekä sen varmistaminen, että tekoälylle syötettävä historiakonteksti pysyy tiukasti kirjautuneen käyttäjän omissa tiedoissa ilman tietovuotoja käyttäjien välillä.
 
 ## AI usage (sprint-level reflection)
 
@@ -253,12 +268,14 @@ Here, cover your **overall** AI use during this sprint (Cursor, ChatGPT, Copilot
 
 If you marked **No** on every ticket, write a short note that you did not use AI coding assistants this sprint (you may still answer verification / independence questions briefly).
 
-- **Where AI helped most this sprint** (themes, ticket IDs, or areas—not a ticket-by-ticket dump):
-- **What I typically accepted from AI suggestions:**
-- **What I typically rejected or reworked, and why:**
-- **How I verified AI-assisted work** (tests, `/docs`, manual demos, reviews):
-- **What I can now explain or do independently** that I relied on AI for earlier:
-- **Anything I would do differently with AI next sprint:**
+## AI usage (sprint-level reflection)
+
+- **Where AI helped most this sprint:** Tekoälyavustajaa hyödynnettiin erityisesti puhtaan Python-analytiikkamoduulin rakenteen suunnittelussa, ISO-viikko- ja kuukausiryhmittelyn reunatapausten tarkistuksessa, Recharts- ja TanStack Query -komponenttien kytkennässä sekä rajapintadokumentaation (`docs/stats.md`) jäsentelyssä.
+- **What I typically accepted from AI suggestions:** Yksikkötestien fixture-rakenteet, Pydantic-vastausmallit, taulukkomuotoiset rajapintakuvaukset sekä selkeät tyhjän tilan (empty state) ja virheellisen aikavälin (`from > to`) validoinnit.
+- **What I typically rejected or reworked, and why:** Yleisluontoiset esimerkkikoodit, joissa käytettiin kovakoodattuja testitokeneita, väärää `localStorage`-avainta tai korvattiin olemassa oleva Sprint 3:n sessiolistaus Kojelaudalla; nämä mukautettiin suoraan projektin omaan autentikaatioketjuun ja käyttöliittymärakenteeseen.
+- **How I verified AI-assisted work:** Jokainen muutos varmennettiin ajamalla `pytest backend/tests/test_analytics.py -v`, testaamalla kaikki `/stats/*`-päätepisteet Swagger UI:ssa (`/docs`), suorittamalla kahden käyttäjän IDOR-eristystesti sekä tarkistamalla verkko- ja UI-toiminta selaimessa.
+- **What I can now explain or do independently:** Osaan suunnitella ja toteuttaa kerrosarkkitehtuurin mukaisen analytiikkaputken (puhdas laskentakerros → palvelukerros → autentikoitu REST-rajapinta → reaktiivinen käyttöliittymä) sekä tunnistaa ja estää aggregaattitason IDOR-haavoittuvuudet.
+- **Anything I would do differently with AI next sprint:** Syötän heti sprintin alussa tarkat Pydantic-skeemat ja olemassa olevien komponenttien rajapinnat kontekstiksi, jotta vältytään turhilta kenttänimien tai JSX-rakenteen korjauskierroksilta.
 
 Do not paste secrets, full JWTs, or `.env` values.
 
