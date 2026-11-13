@@ -4,10 +4,10 @@ Copy this file to `docs/reports/sprint-05.md` in **your** repo and fill the blan
 
 | Field | Your answer |
 | ----- | ----------- |
-| **Dates** | |
-| **Names** | |
-| **Repo URL** | |
-| **Branch** | |
+| **Dates** | 14.11.2026 |
+| **Names** | Kimmo Silvennoinen |
+| **Repo URL** | https://github.com/ckisi001-xamk/exercise-progress-tracker |
+| **Branch** | main |
 
 Tickets: [sprint-05-tickets.md](../tickets/sprint-05-tickets.md) · Index: [../README.md](../README.md)
 
@@ -29,16 +29,16 @@ Skip stretch tickets you did not do. Stretch: Status, PR, and Used AI? for each 
 
 ### S5-01 — Install Ollama locally (Must)
 
-- **Status:** Done / deferred (why):
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** 8da9d1a
 - **Demonstration:**
   1. **Do this:** On the host, run `ollama --version` and/or call the local tags/API (for example `http://localhost:11434`). Confirm a model is available if you already pulled one (`ollama list`).
   2. **Capture:** Terminal or browser screenshot of version/tags responding.
   3. **Must show:** Ollama installed and reachable (version and/or API/tags). You do **not** need the full model download progress bar.
   4. **Must not show:** Unrelated secrets; crop huge download logs if they clutter the proof.
   5. **Save as:** `docs/reports/images/sprint-05/s5-01-ollama.png`
-  6. **Caption (1–2 sentences):**
-- **Used AI?** Yes / No
+  6. **Caption (1–2 sentences):** Ollama (v0.40.16) asennettu paikallisesti Windows-työasemalle, kevyt demomalli (llama3.2:3b) ladattu ja paikallinen HTTP-rajapinta (portti 11434) varmistettu toimivaksi.
+- **Used AI?** Yes
 
 ### S5-02 — AIProvider protocol (Must)
 
