@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSessions, type WorkoutSession } from '../api/sessions';
+import { StatWidgets } from '../components/StatWidgets';
 
 interface DashboardPageProps {
   onSelectSession: (id: string) => void;
@@ -47,7 +48,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onSelectSession, o
           + Luo uusi sessio
         </button>
       </div>
-
+      
+      <StatWidgets />
+    
       <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1.25rem', background: '#fff' }}>
         <h3 style={{ marginTop: 0, marginBottom: '1rem', fontSize: '1.1rem' }}>Viimeisimmät sessiot (Recent sessions)</h3>
 
