@@ -124,29 +124,29 @@ Skip stretch tickets you did not do. Stretch: Status, PR, and Used AI? for each 
 
 ### S4-11 — Progress page charts (Must)
 
-- **Status:**
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** a0a58dd
 - **Demonstration:**
   1. **Do this:** Log in, open Progress for a **known** period whose numbers you can explain (same fixtures as tests or a hand-counted set).
   2. **Capture:** Screenshot of the Progress charts.
   3. **Must show:** Charts rendered for that period (sessions over time and/or distance/intensity by activity as implemented).
   4. **Must not show:** Tokens.
   5. **Save as:** `docs/reports/images/sprint-04/s4-11-progress.png`
-  6. **Caption (1–2 sentences):** (state expected numbers for the period)
-- **Used AI?** Yes / No
+  6. **Caption (1–2 sentences):** Kuvaajassa esitetään käyttäjän viikoittainen harjoitussessioiden määrä aikajaksolla 2026-W42–2026-W43, jossa viikolle W42 osuu 3 sessiota ja viikolle W43 1 sessio vastaten tietokannan harjoitusmerkintöjä.
+- **Used AI?** Yes
 
 ### S4-12 — Period controls (Must)
 
-- **Status:**
-- **PR / commit:**
+- **Status:** Done
+- **PR / commit:** 7ff7546
 - **Demonstration:**
   1. **Do this:** On Progress, change period and/or granularity. Confirm charts refetch and update.
   2. **Capture:** Two screenshots (before and after the control change) or a single shot with the control and updated chart.
   3. **Must show:** Period/granularity control changing the displayed data.
   4. **Must not show:** Tokens.
   5. **Save as:** `docs/reports/images/sprint-04/s4-12-period.png`
-  6. **Caption (1–2 sentences):**
-- **Used AI?** Yes / No
+  6. **Caption (1–2 sentences):** Kuvaajassa tarkkuus on vaihdettu viikkotasolta kuukausitasolle (Kuukausi / Month), jolloin kaikki neljä lokakuun 2026 harjoitussessiota yhdistyvät yhdeksi koontipisteeksi (2026-10: 4 sessiota).
+- **Used AI?** Yes
 
 ### S4-13 — Dashboard stat widgets (Must)
 
